@@ -1,8 +1,7 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 #roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
 
-from re import T
 import rospy
 
 from geometry_msgs.msg import Twist, Vector3

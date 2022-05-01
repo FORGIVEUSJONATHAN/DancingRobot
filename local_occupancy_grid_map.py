@@ -1,10 +1,10 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 #roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
 
-import imp
-from mmap import MAP_ANON, MAP_ANONYMOUS
-from re import T
+# import imp
+# from mmap import MAP_ANON, MAP_ANONYMOUS
+# from re import T
 from time import sleep
 import rospy
 
@@ -39,7 +39,7 @@ class occupancy_map():
         self.map_pub = rospy.Publisher('/local_map', OccupancyGrid, queue_size=5)
 
         # where to read laser scan data
-        self.scan_sub = rospy.Subscriber('/kf_scan', LaserScan, self.clbk_laser)
+        self.scan_sub = rospy.Subscriber('/scan', LaserScan, self.clbk_laser)
         self.vel = Twist()
         # What function to call when ctrl + c is issued
         rospy.on_shutdown(self.shutdown)
@@ -47,9 +47,9 @@ class occupancy_map():
         self.rate = rospy.Rate(20)
 
         ## initialize the setting of grid map
-        self.resolution = 0.01
-        self.width = 300
-        self.height = 300
+        self.resolution = 0.1
+        self.width = 30
+        self.height = 30
         self.center = (self.width//2,self.height//2)
 
         
@@ -81,10 +81,10 @@ class occupancy_map():
             else:
                 x = np.sin(np.radians(i)) * self.range[i] / self.resolution
                 y = np.cos(np.radians(i)) * self.range[i] / self.resolution
-            if x!=0 and y!=0 and x<150 and y<150:
+            if x!=0 and y!=0 and x<15 and y<15:
                 # grid_map[int(x//1)+self.center[0], self.center[1]-int(y//1)] = 100 
                 # grid_map[-self.center[1]-int(y//1), -int(x//1)-self.center[0]] = 100 
-                grid_map[int(x//1)+self.center[0], int(y//1)-9+self.center[1]] = 100 
+                grid_map[int(x//1)+self.center[0], int(y//1)+self.center[1]] = 100 
 
                 print(i, self.range[i])
                 print(np.unique(grid_map, return_counts=True))
