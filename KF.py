@@ -45,15 +45,9 @@ class KF():
 
         self.rate = rospy.Rate(20)
 
-        ## initialize the setting of grid map
-        self.resolution = 0.01
-        self.width = 300
-        self.height = 300
-        self.center = (self.width//2,self.height//2)
-
     
-        self.V = np.identity(360) * 9**(-5)
-        self.W = np.identity(360) * 10**(-1)
+        self.V = np.identity(360) * 10**(-5)
+        self.W = np.identity(360) * (10**-3)
 
         self.P = np.eye(360)        
         self.Ek0 = np.zeros((360,1),float)
@@ -66,9 +60,9 @@ class KF():
     def prediction(self):
 
         self.Ek1 = self.Ek0
-        print("0",np.unique(self.Ek0))
+        # print("0",np.unique(self.Ek0))
 
-        print("1",np.unique(self.Ek1))
+        # print("1",np.unique(self.Ek1))
 
         self.Pk1 = self.P + self.V
     def update(self):

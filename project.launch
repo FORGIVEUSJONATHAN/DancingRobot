@@ -1,0 +1,9 @@
+<launch>
+	<node name="kf_scalar_filters" pkg="project" type="kf_scalar_filters.py" output="screen" cwd="node"/>
+	<node name="local_occupancy_grid_map" pkg="project" type="local_occupancy_grid_map.py" output="screen" cwd="node"/>
+	<node name="comm" pkg="project" type="comm.py" output="screen" cwd="node"/>
+
+	
+	<!-- node name="amcl_odom" pkg="project" type="amcl_odom.py" output="screen"/ -->
+	<!-- node name="project_main" pkg="project" type="ros_DWA.py" output="screen"/ -->
+</launch>

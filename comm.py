@@ -14,16 +14,10 @@ if os.getenv('ROBOT_LIST') != None:
 robot = os.getenv('ROBOT')
 
 
-def get_free_port():
-    sock = socket.socket()
-    sock.bind(('', 0))
-    return sock.getsockname()[1]
-
-
 
 class Listener:
     def __init__(self):
-        rospy.init_node("listener")
+        rospy.init_node("comm")
 
         self.robot_model = rospy.get_param('~robot_name', 'turtlebot3_waffle')
 
