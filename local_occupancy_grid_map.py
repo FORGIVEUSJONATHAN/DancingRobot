@@ -1,10 +1,5 @@
 #! /usr/bin/env python3
 
-#roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
-
-# import imp
-# from mmap import MAP_ANON, MAP_ANONYMOUS
-# from re import T
 from time import sleep
 import rospy
 
@@ -20,32 +15,20 @@ from collections import deque
 import sys
 
 
-
 class occupancy_map():
     def __init__(self):
         rospy.init_node('local_occupancy_grid_map')
     
-        # use 'mobile_base' for turtlebot2?
-        self.robot_model = rospy.get_param('~robot_name', 'turtlebot3_waffle')
-        
-        print ('Robot model: ', self.robot_model)
-
-        if 'turtlebot2' in self.robot_model:
-            self.vel_pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist, queue_size=5)
-        else:
-            self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
-        
+        self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
         self.map_pub = rospy.Publisher('/local_map', OccupancyGrid, queue_size=5)
 
-        # where to read laser scan data
         self.scan_sub = rospy.Subscriber('/scan', LaserScan, self.clbk_laser)
         self.vel = Twist()
-        # What function to call when ctrl + c is issued
         rospy.on_shutdown(self.shutdown)
 
         self.rate = rospy.Rate(20)
 
-        ## initialize the setting of grid map
+        # initialize the settings of grid map
         self.resolution = 0.05
         self.width = int(3/self.resolution)
         self.height = self.width
@@ -72,40 +55,29 @@ class occupancy_map():
         grid_map = np.zeros((self.width,self.height), dtype=np.int)
 
         self.range = msg.ranges
-        # print(len(self.range))
         for i in range(len(self.range)):
+
             if self.range[i]==float("inf"):
                 x = 0
                 y = 0
             else:
                 x = np.sin(np.radians(i)) * self.range[i] / self.resolution
                 y = np.cos(np.radians(i)) * self.range[i] / self.resolution
-            if x!=0 and y!=0 and x<(self.width//2) and y<(self.width//2):
-                # grid_map[int(x//1)+self.center[0], self.center[1]-int(y//1)] = 100 
-                # grid_map[-self.center[1]-int(y//1), -int(x//1)-self.center[0]] = 100 
-                grid_map[int(x//1)+self.center[0], int(y//1)+self.center[1]-1] = 100 
 
-                # print(i, self.range[i])
-                # print(np.unique(grid_map, return_counts=True))
+            if x!=0 and y!=0 and x<(self.width//2) and y<(self.width//2):
+                grid_map[int(x//1)+self.center[0], int(y//1)+self.center[1]-1] = 100
 
         grid_map = grid_map.flatten()
-
         Occ_map.data = list(grid_map)
         
-        # print(np.unique(Occ_map.data, return_counts=True))
         self.map_pub.publish(Occ_map)
 
-    def shutdown(self):
-        print ("Shutdown!")
-        # stop turtlebot
-        rospy.loginfo("Stop TurtleBot")
 
+    def shutdown(self):
         self.vel.linear = Vector3(0.0, 0.0, 0.0)
         self.vel.angular = Vector3(0.0, 0.0, 0.0)
         
         self.vel_pub.publish(self.vel)
-
-	# sleep just makes sure TurtleBot receives the stop command prior to shutting down 
         rospy.sleep(1)
 
 ################################# Main() ########################
@@ -113,7 +85,7 @@ class occupancy_map():
 if __name__ == '__main__':
 
     try:
-        occ_map = occupancy_map()
+        occupancy_map()
         while not rospy.is_shutdown():
             rospy.spin()
 

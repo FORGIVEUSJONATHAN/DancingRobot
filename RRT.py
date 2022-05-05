@@ -51,17 +51,20 @@ class RRT:
         self.node_random = None
         self.goal_flag = False
     
+
     def distance(self,x1,y1,x2,y2):
         px = float(x2)-float(x1)
         py = float(y2)-float(y1)
         return (px**2 + py**2)**0.5
     
+
     def node_distance(self,node1,node2):
         (x1,y1) = node1.value
         (x2,y2) = node2.value
         return self.distance(x1,y1,x2,y2)
 
-    ## find the nearest node in the function
+    
+    # find the nearest node in the function
     def nearest_node(self):
         (x2,y2) = self.node_random.value
         l = []
@@ -75,6 +78,7 @@ class RRT:
                 min_dist = dist
                 node_record = i
         return node_record
+    
     
     def move_node(self, step_size = 15):
         dist = self.node_distance(self.node_near,self.node_random)
@@ -98,7 +102,6 @@ class RRT:
                     new_node = Node((x_new,y_new),[])
                     self.node_near.addchild(new_node)
                     self.change_node_color(new_node)
-            
 
     
     def checkObstacle(self,x1,y1,x2,y2):
@@ -114,11 +117,13 @@ class RRT:
                         return True ## there is an obstacle
         return False ## no obstacles
 
+
     def random_sample(self):
         x = int(np.random.uniform(0, self.map_width))
         y = int(np.random.uniform(0, self.map_height))
         self.node_random = Node((x,y),[])
     
+
     def change_node_color(self, node):
         (x,y) = node.value
         for i in [-1,0,1]:
@@ -127,12 +132,14 @@ class RRT:
         
         cv2.imwrite(self.image_path_save, self.visualization)
 
+
     def change_node_color_large(self, node):
         (x,y) = node.value
         for i in [-2,-1,0,1,2]:
             for k in [-2,-1,0,1,2]:
                 self.visualization[y+i,x+k] = 0 ## make it black
         cv2.imwrite(self.image_path_save, self.visualization) 
+      
         
     def find_path(self, iteration = 5000):
         for i in range(iteration):
